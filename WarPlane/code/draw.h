@@ -3,7 +3,7 @@
 
 void drawAll();
 void basicDraw();
-
+void fire();
 
 
 #endif

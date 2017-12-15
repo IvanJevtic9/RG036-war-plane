@@ -5,17 +5,19 @@
 #include "timer.h"
 #include <stdlib.h>
 
-
+// pozivamo funkciju koja poziva sva iscrtavanja u programu 
 void drawAll(){
 
 	if(init_done){
 		basicDraw();	
-			
+		
+		if(fire_active)
+				fire();	
 	}
 
 }
 
-
+// crtanje aviona
 void basicDraw(){
 	
 	glColor3f(plane->red, plane->green, plane->blue);
@@ -45,8 +47,26 @@ void basicDraw(){
 
 	glutPostRedisplay();
 }
+// crtanje metkova
+void fire(){
+	if(bullets->in_live){
+
+		
 
 
+		glPushMatrix();
+					glColor3f(1,0,0);
+					glTranslatef(plane->x_pos, plane->y_pos, bullets->z_pos);
+					glutSolidSphere(0.02,50,20);
+		glPopMatrix();
+
+
+		glutPostRedisplay();
+			
+
+	}
+
+}
 
 
 

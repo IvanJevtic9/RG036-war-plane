@@ -11,7 +11,7 @@ void startTimers(){
 	
 
 }
-
+// rotaciaj aviona , nije najpravilnija za sada 
 void rotatePlane(int timer_id){
 
 	if(timer_id != 1)
@@ -25,7 +25,31 @@ void rotatePlane(int timer_id){
 	glutTimerFunc(100,rotatePlane,1);
 
 }
+// tajmer za animaciju kretanja metka
+void moveBullets(int timer_id){
 
+	if(timer_id != 1 ){
+		return;
+
+	}
+
+	if(fire_active){
+
+		if(bullets->z_pos < -5){
+			bullets->z_pos =  1;
+			fire_active = 0;
+			bullets->in_live = 0;
+			return;
+		}
+	
+		bullets->z_pos -= 0.2;
+	
+		glutPostRedisplay();
+
+	}
+	
+	glutTimerFunc(30,moveBullets,1);	
+}
 
 
 

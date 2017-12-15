@@ -36,7 +36,7 @@ void onDisplay(){
 void onKeyboard(unsigned char c , int x, int y){
 	
 	switch(c){
-
+		// pomeranje aviona
 		case 'd' : 
 				if(plane->x_pos < 0.6)
 					plane->x_pos += 0.01;break;
@@ -57,5 +57,21 @@ void onReshape(int w_width, int w_height){
 	window_width = w_width;
 	window_height = w_height;
 
+}
+
+
+void onMouseClick(int button, int state, int x, int y){
+	// levim klikom zapocinjemo pucanje , za sad je moguce samo jedan metak , dok se on ne zavrsi necemo moci da ispalimo drugi 
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+		if(!fire_active){
+				bullets->in_live = 1;
+				fire_active = 1 ;
+				glutTimerFunc(100,moveBullets,1);
+			}
+}
+
+void onMouseMove(int x,int y){
+
+	
 }
 

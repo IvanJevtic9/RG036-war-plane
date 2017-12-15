@@ -15,8 +15,8 @@ int main(int argc,char** argv){
 
 	glutReshapeFunc(onReshape);
 	glutDisplayFunc(onDisplay);
-	
-	
+	glutMouseFunc(onMouseClick);
+	glutPassiveMotionFunc(onMouseMove);
 
 	glutSetCursor(GLUT_CURSOR_NONE);
 
