@@ -5,12 +5,15 @@
 	extern int init_done;
 	extern Plane* plane;
 	extern Bullet* bullets;
+	extern Impediment* impediments;
+
 
 	void initGame();
 	void startGame();
 	
 	extern int fire_active;
-	
+	extern int imp_active;
+
 	
 
 

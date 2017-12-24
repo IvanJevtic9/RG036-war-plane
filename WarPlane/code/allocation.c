@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-// alokacija objekata 
+// alokacija objekata , avion ,metkovi , prepreke 
 
 Plane* newPlane(double x, double y, double z , double r , double g, double b , double rotate , int live ){
 	
@@ -44,5 +44,22 @@ Bullet* newBullet(double x, double y, double z, int live){
 
 
 }
+Impediment* newImpediment(double x, double y, double z, double d, int live){
 
+	Impediment* i = malloc(sizeof(Impediment));
+
+	if(i == NULL){
+		printf("Greska pri alokaciji!");
+		exit(EXIT_FAILURE);
+		}
+
+	i->x_pos = x;
+	i->y_pos = y;
+	i->z_pos = z;
+	i->dim = d;
+	i->in_live = live;
+
+	return i;
+
+}
 

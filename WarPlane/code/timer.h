@@ -4,6 +4,6 @@
 void startTimers();
 void rotatePlane(int timer_id);
 void moveBullets(int timer_id);
-
+void moveImpediments(int timer_id);
 
 #endif

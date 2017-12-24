@@ -4,6 +4,6 @@
 void drawAll();
 void basicDraw();
 void fire();
-
+void draw_imp();
 
 #endif

@@ -4,6 +4,7 @@
 #include "init.h"
 #include "callback.h"
 
+/*Pozivamo tajmere koji se uvek izvrsavaju za svo vreme trajanja igre*/
 void startTimers(){
 
 	glutTimerFunc(10,rotatePlane,1);
@@ -11,7 +12,7 @@ void startTimers(){
 	
 
 }
-// rotaciaj aviona , nije najpravilnija za sada 
+/*rotacija aviona  , ogranicavamo max ugao */
 void rotatePlane(int timer_id){
 
 	if(timer_id != 1)
@@ -25,7 +26,40 @@ void rotatePlane(int timer_id){
 	glutTimerFunc(100,rotatePlane,1);
 
 }
-// tajmer za animaciju kretanja metka
+
+/*Tajmer za pokretanje prepreke , inicijalizujemo poziciju do koje moze da ide po z osi , cim stigne dotle 
+ponovo ga vracamo na pocetak , za sad su ove prepreke ovake , kad budem pravio vise prepreka na sceni 
+prepreke ce imati i brzinu */
+void moveImpediments(int timer_id){
+
+	if(timer_id != 1){
+		return;
+	}
+	
+
+	if(imp_active ){
+		if(impediments->z_pos > 2){
+	
+			impediments->z_pos = -5;
+			impediments->x_pos = random_float(-1,1);
+			impediments->dim = random_float(0.02,0.3);
+			/*imp_active = 0;
+			impediments->in_live = 0;			
+			return ;*/
+		}
+	
+	
+		impediments->z_pos += 0.1;
+		glutPostRedisplay();	
+	}
+	
+	glutTimerFunc(50,moveImpediments,1);
+
+
+
+}
+/*pokretanje metkova , krecu se od samog aviona pa se udaljavaju po z osi , kad predje zadnju ravan isecanja scene 
+oznacimo da je pucanje zavrseno , metak vise nije u zivotu*/
 void moveBullets(int timer_id){
 
 	if(timer_id != 1 ){
