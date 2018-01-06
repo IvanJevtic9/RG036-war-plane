@@ -4,7 +4,7 @@
 
 // alokacija objekata , avion ,metkovi , prepreke 
 
-Plane* newPlane(double x, double y, double z , double r , double g, double b , double rotate , int live ){
+Plane* newPlane(double x, double y, double z , double rotate , int live ){
 	
 	Plane* p = malloc(sizeof(Plane));
 
@@ -16,9 +16,7 @@ Plane* newPlane(double x, double y, double z , double r , double g, double b , d
 	p->x_pos = x;
 	p->y_pos = y;
 	p->z_pos = z;
-	p->red = r;
-	p->green = g;
-	p->blue = b;
+	
 	p->z_rotate = rotate;
 	p->in_live = live;
 
@@ -44,7 +42,7 @@ Bullet* newBullet(double x, double y, double z, int live){
 
 
 }
-Impediment* newImpediment(double x, double y, double z, double d, int live){
+Impediment* newImpediment(double x, double y, double z, double d, int live,float brz){
 
 	Impediment* i = malloc(sizeof(Impediment));
 
@@ -58,6 +56,8 @@ Impediment* newImpediment(double x, double y, double z, double d, int live){
 	i->z_pos = z;
 	i->dim = d;
 	i->in_live = live;
+	
+	i->brzina = brz;
 
 	return i;
 

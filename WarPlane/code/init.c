@@ -19,9 +19,12 @@ Impediment* impediments = NULL;
 
 void initGame(){
 	/*inicijalizacija prepreka u nekoj slucajnoj odabranoj tacki */
-	impediments = newImpediment( random_float(-1,1) , 0 , -5, random_float(0.02,0.3) , 1);
-	plane = newPlane( 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1);
-	bullets = newBullet( 0 , 0 , 1 , 1 );
+	impediments = newImpediment( random_float(-1,1) , 0 , -5, random_float(0.05,0.3) , 0,random_float(0.05,0.15));
+	/*avion na njegovu pocetnu poziciju*/
+	plane = newPlane( 0 , 0 , 1 , 0 , 1);
+
+	/*inicijalizujemo metak samo , cije cemo kordinate zadati kad ispalimo metak*/
+	bullets = newBullet( 0 ,0, 0 , 0 );
 	
 	init_done = 1;
 

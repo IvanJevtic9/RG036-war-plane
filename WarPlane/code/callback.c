@@ -6,10 +6,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-
+#define TIMER_ID 1
+#define TIMER_INTERVAL 100
+#define TIMER_INTERVAL2 50
 
 int window_width = 0;
 int window_height = 0;
+int iskljuci_timerB = 0;
 
 /*funkcija gde atributi min i max oznacava interval, u kojem funkcija vraca jedan broj iz tog intervala 
 	po slucajnom izboru*/
@@ -36,7 +39,7 @@ void onDisplay(){
 	/*podesavanje kamere , to jesto pozicioniramo gde se oko nalazi prve 3 kordinate , i u koju tacku gleda */
  	 glMatrixMode(GL_MODELVIEW);
  	 glLoadIdentity();
-	 gluLookAt(0, 0.65 ,2, 0, 0, 0, 0, 1, 0);
+	 gluLookAt(0,0.65,2, 0, 0, 0, 0, 1, 0);
 
 	/*pozivamo crtanje objekata*/	
 	drawAll();
@@ -51,14 +54,14 @@ void onKeyboard(unsigned char c , int x, int y){
 	switch(c){
 		/*pomeranje aviona desno , levo*/
 		case 'd' : 
-				if(plane->x_pos < 0.6)
-					plane->x_pos += 0.01;break;
+				if(plane->x_pos < 0.8)
+					plane->x_pos += 0.02;break;
 		case 'a' : 
-				if(plane->x_pos > -0.6 )
-					plane->x_pos -= 0.01;break;
+				if(plane->x_pos > -0.8 )
+					plane->x_pos -= 0.02;break;
 	
 		/*izlaz iz programa*/
-		case 'q' : exit(0);break;
+		case 27 : exit(0);break;
 		
 		/*na komandu p ubacujemo prepreke i pokrecemo ih, za sad je moguce samo jedna prepreka da bude vidljiva na scecni
 		  kasnije cu uvesti da ih bude vise */
@@ -67,10 +70,13 @@ void onKeyboard(unsigned char c , int x, int y){
 
 					impediments->in_live = 1;		
 					imp_active = 1;			
-					glutTimerFunc(100,moveImpediments,1);
+					glutTimerFunc(TIMER_INTERVAL2,moveImpediments,TIMER_ID);
 			 	}
 			 };break;
-
+		/*vracanje aviona u zivot , nece biti ovako an kraju , cisto sam uveo to radi provere, da ne izlazim non stop iz programa*/
+		case 'r':
+			plane->in_live=1;	 
+				break;
 		default : {}
 	}
 }
@@ -87,12 +93,20 @@ void onReshape(int w_width, int w_height){
 
 void onMouseClick(int button, int state, int x, int y){
 	// levim klikom zapocinjemo pucanje , za sad je moguce samo jedan metak , dok se on ne zavrsi necemo moci da ispalimo drugi 
-	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-		if(!fire_active){
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+		/* ako je pucnjava ne aktivna i ako je avion u zivotu zapocinjemo pucnjavu  */
+		if(!fire_active && plane->in_live == 1){
 				bullets->in_live = 1;
+				
+				/*pocetna kordinata projektila*/
+				bullets->x_pos = plane->x_pos;
+				bullets->y_pos = plane->y_pos;
+				bullets->z_pos = plane->z_pos;
+				/*postavljamo da je pucnjava aktivna kako ne bi mogli opet da pucamo i pomeramo metak*/
 				fire_active = 1 ;
-				glutTimerFunc(100,moveBullets,1);
+				glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);
 			}
+	}
 }
 
 void onMouseMove(int x,int y){

@@ -1,9 +1,14 @@
 #ifndef _CALLBACK_H_			
 #define _CALLBACK_H_			
 	
+#define TIMER_ID 1
+#define TIMER_INTERVAL 100
+#define TIMER_INTERVAL2 50
 
 extern int window_width;
 extern int window_height;
+extern int iskljuci_timerB;
+
 
 void onDisplay();
 void onKeyboard(unsigned char c , int x, int y);

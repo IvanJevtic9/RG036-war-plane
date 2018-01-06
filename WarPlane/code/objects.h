@@ -1,17 +1,13 @@
 #ifndef _OBJECTS_H_
 #define _OBJECTS_H_
 
-/*struktura objekata , avion ima 3 atributa za poziciju , boju , rotaciju i da li je avion u zivotu */
+/*struktura objekata , avion ima 3 atributa za poziciju , rotaciju i da li je avion u zivotu */
 
 struct _Plane{
 
 	double x_pos;
 	double y_pos;
 	double z_pos;
-	
-	double red;
-	double green;
-	double blue;
 
 	double z_rotate;
 
@@ -28,7 +24,7 @@ struct _Bullet{
 	int in_live;
 	
 };
-/*prepreke imaju 3 za poziciju , dimenziju i da li je u zivotu prepreka*/
+/*prepreke imaju 3 za poziciju , dimenziju i da li je u zivotu prepreka , kao i informaciju o brzini*/
 struct _Impediment{
 	double x_pos;
 	double y_pos;
@@ -36,6 +32,7 @@ struct _Impediment{
 	
 	double dim;
 	int in_live ;
+	float brzina;
 };
 
 /*Uvodim skracenice za poziv strukture*/

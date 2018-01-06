@@ -3,13 +3,13 @@
 #include "init.h"
 
 int main(int argc,char** argv){
-
+	/*inicijalizujemo sve na pocetku , sandardno sve */
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 
-	glutInitWindowSize(700,700);
+	glutInitWindowSize(1240,800);
 	glutInitWindowPosition(100,100);
-	glutCreateWindow(argv[0]);
+	glutCreateWindow("War Plane");
 
 	glutKeyboardFunc(onKeyboard);
 
