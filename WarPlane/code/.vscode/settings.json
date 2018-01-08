@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "callback.h": "c",
+        "timer.h": "c"
+    }
+}

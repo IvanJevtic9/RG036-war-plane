@@ -61,30 +61,37 @@ void moveImpediments(int timer_id){
 oznacimo da je pucanje zavrseno , metak vise nije u zivotu*/
 void moveBullets(int timer_id){
 
+	
 	if(timer_id != 1 ){
 		return;
-
-		}
-	
-	if(fire_active ){
-		if(bullets->z_pos <= -5){
-			fire_active = 0;
-			bullets->in_live = 0;
-			return;
-		}
-
-		bullets->z_pos -= 0.1;
-
-		glutPostRedisplay();
 	}
 
-	if(iskljuci_timerB){
-		iskljuci_timerB = 0;
-		return;
+	int i;	
+	for(i=0;i<=4;i++){
+		if(bullets[i]->in_live){
+			if(bullets[i]->z_pos <= -5){
+				bullets[i]->in_live = 0;
+			}
+
+			bullets[i]->z_pos -= 0.1;
+
+			glutPostRedisplay();
+		}
+	}
+	if(bullets[0]->in_live == 0 && bullets[1]->in_live == 0 && bullets[2]->in_live == 0 &&
+		bullets[3]->in_live == 0 && bullets[4]->in_live == 0){
+			timer_active = 0;
+			return;
 	}
 
 	glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);	
 }
 
+void reload(int timer_id){
+	if(timer_id != 1)
+		return;
 
+
+	return;
+}
 

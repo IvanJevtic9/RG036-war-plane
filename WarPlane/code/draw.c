@@ -7,33 +7,28 @@
 #include <stdio.h>
 #include "callback.h"
 
-/* posto koliziju za projektil i prepreku ne mozemo da koristimo kod oba objekta , jer ce se prvo unistiti jedan pa tek onaj drugi 
-moramo pamtiti da li se prepreka unistila od strane projetkila da bi znali da i metak izbrisemo*/
-int flag = 0;
-
 /*funkcija koja iscrtava sve objekte , sva iscrtavanja u programu se nalaze ovde*/
 void drawAll(){
 
 	if(init_done){
 		basicDraw();	
-		
-		if(imp_active)
-				draw_imp();		
-		if(fire_active)
-				fire();	
-	}
 
+		if(imp_active)
+			draw_imp();	
+
+		fire();	
+	}
 }
 /*Odredjujemo koliziju izmedju prepreke i aviona kad im se poklopi opseg x-ose njihove sirine 
 i kad im se prednja strana poklopi po z osi*/
 
 int  coalision_plane_imp(){
 	
-	if( ((((impediments->x_pos + impediments->dim/2) - (plane->x_pos-0.175)) > 0 &&
-		((impediments->x_pos + impediments->dim/2) - (plane->x_pos-0.175)) < (impediments->dim + 0.25))
+	if( ((((impediments->x_pos + impediments->dim/2) - (plane->x_pos-0.125)) > 0 &&
+		((impediments->x_pos + impediments->dim/2) - (plane->x_pos-0.125)) < (impediments->dim + 0.25))
 										|| 
-		(((plane->x_pos+0.175)-(impediments->x_pos - impediments->dim/2)) > 0 &&
-		((plane->x_pos+0.175)-(impediments->x_pos - impediments->dim/2))< (impediments->dim + 0.25))) 
+		(((plane->x_pos+0.125)-(impediments->x_pos - impediments->dim/2)) > 0 &&
+		((plane->x_pos+0.125)-(impediments->x_pos - impediments->dim/2))< (impediments->dim + 0.25))) 
 						&& 
 	    plane->y_pos == impediments->y_pos 
 						&& 
@@ -49,24 +44,27 @@ int  coalision_plane_imp(){
 , i da im se opseg dubine poklopi */
 int coalsion_bullet_imp(){
 
-	if(((((impediments->x_pos + impediments->dim/2) - (bullets->x_pos-0.01)) > 0 &&
-	  ((impediments->x_pos + impediments->dim/2) - (bullets->x_pos-0.01)) < (impediments->dim + 0.02))
-										|| 
-	  (((bullets->x_pos+0.01)-(impediments->x_pos - impediments->dim/2)) > 0 &&
-	  ((bullets->x_pos+0.01)-(impediments->x_pos - impediments->dim/2))< (impediments->dim + 0.02))) 
-						&& 
-	  bullets->y_pos == impediments->y_pos 
-						&& 
-	  ((impediments->z_pos+impediments->dim/2) >= (bullets->z_pos ) &&
-	  ((impediments->z_pos-impediments->dim/2) < (bullets->z_pos + 0.2 )))
-						&& 
-	  bullets->in_live == 1)	
-		return 1;
-	else 
-		return 0;
+	int i;
 
+	for(i=0;i<=4;i++){
+		if(((((impediments->x_pos + impediments->dim/2) - (bullets[i]->x_pos-0.01)) > 0 &&
+		((impediments->x_pos + impediments->dim/2) - (bullets[i]->x_pos-0.01)) < (impediments->dim + 0.02))
+											|| 
+		(((bullets[i]->x_pos+0.01)-(impediments->x_pos - impediments->dim/2)) > 0 &&
+		((bullets[i]->x_pos+0.01)-(impediments->x_pos - impediments->dim/2))< (impediments->dim + 0.02))) 
+							&& 
+		bullets[i]->y_pos == impediments->y_pos 
+							&& 
+		((impediments->z_pos+impediments->dim/2) >= (bullets[i]->z_pos ) &&
+		((impediments->z_pos-impediments->dim/2) < (bullets[i]->z_pos + 0.2 )))
+							&& 
+		bullets[i]->in_live == 1)	
+			
+			return (i+1);
+	}
 
-}
+	return 0;
+}	
 
 /* crtanje aviona , krajnji izgled aviona cu izmeniti do zavrsetka projekta */
 void basicDraw(){
@@ -76,18 +74,19 @@ void basicDraw(){
 	glPushMatrix();
 		/*pozicioniramo se u kordinate sredista aviona i rotiramo avion*/
 		glTranslatef(plane->x_pos,plane->y_pos,plane->z_pos);
-		
-		/*Posto jos nisam ukljucio osvetljenje za sad cu mu staviti da bude crn*/
-		glColor3f(0,0,0);
 
 		glRotatef(sin(plane->z_rotate)*15,0,0,1);
 		
 		/*telo aviona*/
 		glPushMatrix();
+			glColor3f(0.7,0.7,0.7);
 			glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.25);
 		glPopMatrix();
 		/*krila aviona*/	
+		
+		glColor3f(0,0,0);
+		
 		glPushMatrix();
 			glTranslatef(0, 0.025, -0.1);			
 			glScalef(1, 0.2, 0.1);
@@ -105,6 +104,7 @@ void basicDraw(){
 	else{
 		/*ako dodje do kolizije avion nije u zivotu vise*/
 		plane->in_live =0; 
+		
 	}
 
 
@@ -112,23 +112,19 @@ void basicDraw(){
 }
 /* crtanje metkova , na osnovu kordinata koje joj prosledjujemo*/
 void fire(){
-	if(bullets->in_live && plane->in_live && !flag){
+	int i;
+	for(i=0;i<5;i++){
+		if(bullets[i]->in_live){
 
-		glPushMatrix();
-					glColor3f(1,0,0);
-					glTranslatef(bullets->x_pos, bullets->y_pos, bullets->z_pos);
-					glutSolidSphere(0.02,50,20);
-		glPopMatrix();
+			glPushMatrix();
+						glColor3f(1,0,0);
+						glTranslatef(bullets[i]->x_pos, bullets[i]->y_pos, bullets[i]->z_pos);
+						glutSolidSphere(0.02,50,20);
+			glPopMatrix();
 
-		glutPostRedisplay();
+			glutPostRedisplay();
+		}
 	}
-	else{		/*ako dodje do kolizije metak nije u zivotu vracamo flag na 0 i isklucujemo pucnjavu*/
-		flag = 0;
-		fire_active = 0;
-		bullets->in_live = 0;
-		glutPostRedisplay();
-	}
-
 }
 /*crtanje prepreka u kordinatama koje joj prosledimo*/
 void draw_imp(){
@@ -136,9 +132,9 @@ void draw_imp(){
 	if(impediments->in_live && !coalsion_bullet_imp() && !coalision_plane_imp()){		
 		
 			glPushMatrix();
-					glColor3f(0,0,1);
-					glTranslatef(impediments->x_pos,impediments->y_pos,impediments->z_pos);
-					glutSolidCube(impediments->dim);
+				glColor3f(0,0,1);
+				glTranslatef(impediments->x_pos,impediments->y_pos,impediments->z_pos);
+				glutSolidCube(impediments->dim);
 			glPopMatrix();
 
 			glutPostRedisplay();
@@ -147,14 +143,17 @@ void draw_imp(){
 	else{
 		/* u suprotnom doslo je do kolizije flag=1 oznaacavamo da je doslo do sudara izmedju metka i prepreke
 		 , kako bi znali da unistimo i metak jer funkcija coalision nece raditi jer je prepreka unistena */
-		iskljuci_timerB = 1;
-		flag = 1;
+
+		int flag = coalsion_bullet_imp();
+		if(flag > 0)
+			bullets[flag-1]->in_live = 0;
+		
 		impediments->z_pos = -5;
 		impediments->x_pos = random_float(-1,1);
 		impediments->dim = random_float(0.02,0.3);
 		impediments->brzina = random_float(0.05,0.15);
 
-		glutPostRedisplay();
+		glutPostRedisplay(); 
 	}
 }
 

@@ -5,13 +5,13 @@
 #include "callback.h"
 #include "allocation.h"
 
-
-int fire_active = 0;
 int init_done = 0;
 int imp_active = 0;
 
+/*identifikatori broja metkova i tajmera koji ih pokrece*/
+int timer_active = 0;
 
-Bullet* bullets = NULL;
+Bullet* bullets[5];
 Plane* plane = NULL;
 Impediment* impediments = NULL;
 
@@ -24,8 +24,11 @@ void initGame(){
 	plane = newPlane( 0 , 0 , 1 , 0 , 1);
 
 	/*inicijalizujemo metak samo , cije cemo kordinate zadati kad ispalimo metak*/
-	bullets = newBullet( 0 ,0, 0 , 0 );
-	
+	int i;
+	for(i=0;i<5;i++){
+		bullets[i] = NULL;
+		bullets[i] = newBullet(0,0,0,0);
+	}
 	init_done = 1;
 
 }

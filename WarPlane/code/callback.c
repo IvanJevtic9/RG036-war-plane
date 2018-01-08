@@ -1,18 +1,16 @@
+#include<GL/glut.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <math.h>
 #include "callback.h"	
 #include "init.h"
 #include "draw.h"		
 #include "timer.h"
-#include<GL/glut.h>
-#include<stdio.h>
-#include<stdlib.h>
-
-#define TIMER_ID 1
-#define TIMER_INTERVAL 100
-#define TIMER_INTERVAL2 50
 
 int window_width = 0;
 int window_height = 0;
-int iskljuci_timerB = 0;
+
+GLuint tekstura[2];
 
 /*funkcija gde atributi min i max oznacava interval, u kojem funkcija vraca jedan broj iz tog intervala 
 	po slucajnom izboru*/
@@ -41,6 +39,30 @@ void onDisplay(){
  	 glLoadIdentity();
 	 gluLookAt(0,0.65,2, 0, 0, 0, 0, 1, 0);
 
+	glDepthMask(GL_FALSE);
+  	glDisable(GL_DEPTH_TEST);
+ 	glDisable(GL_LIGHTING);
+  
+  	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+ 	glBindTexture(GL_TEXTURE_2D,tekstura[1]);
+  	glBegin(GL_QUADS);
+    	glNormal3f(0,0,1);
+    	glTexCoord2f(0,0);
+    	glVertex3f(-3,-3,-0.99);
+    	glTexCoord2f(1,0);
+    	glVertex3f(3,-3,-0.99);
+    	glTexCoord2f(1,1);
+    	glVertex3f(3,3,-0.99);
+    	glTexCoord2f(0,1);
+    	glVertex3f(-3,3,-0.99);
+  	glEnd();
+  	glBindTexture(GL_TEXTURE_2D,0);
+  
+  	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+  	glEnable(GL_DEPTH_TEST);
+  	glDepthMask(GL_TRUE);
+
+
 	/*pozivamo crtanje objekata*/	
 	drawAll();
 
@@ -59,7 +81,15 @@ void onKeyboard(unsigned char c , int x, int y){
 		case 'a' : 
 				if(plane->x_pos > -0.8 )
 					plane->x_pos -= 0.02;break;
-	
+					
+		case 'D' : 
+				if(plane->x_pos < 0.8)
+					plane->x_pos += 0.02;break;
+		case 'A' : 
+				if(plane->x_pos > -0.8 )
+					plane->x_pos -= 0.02;break;
+		
+
 		/*izlaz iz programa*/
 		case 27 : exit(0);break;
 		
@@ -73,10 +103,25 @@ void onKeyboard(unsigned char c , int x, int y){
 					glutTimerFunc(TIMER_INTERVAL2,moveImpediments,TIMER_ID);
 			 	}
 			 };break;
+
+		case 'P' : {	
+			   if(!imp_active){	
+
+					impediments->in_live = 1;		
+					imp_active = 1;			
+					glutTimerFunc(TIMER_INTERVAL2,moveImpediments,TIMER_ID);
+			 	}
+			 };break;
+
 		/*vracanje aviona u zivot , nece biti ovako an kraju , cisto sam uveo to radi provere, da ne izlazim non stop iz programa*/
 		case 'r':
 			plane->in_live=1;	 
 				break;
+
+		case 'R':
+			plane->in_live=1;	 
+				break;
+
 		default : {}
 	}
 }
@@ -93,24 +138,38 @@ void onReshape(int w_width, int w_height){
 
 void onMouseClick(int button, int state, int x, int y){
 	// levim klikom zapocinjemo pucanje , za sad je moguce samo jedan metak , dok se on ne zavrsi necemo moci da ispalimo drugi 
+	
+	int n;
+
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
 		/* ako je pucnjava ne aktivna i ako je avion u zivotu zapocinjemo pucnjavu  */
-		if(!fire_active && plane->in_live == 1){
-				bullets->in_live = 1;
-				
-				/*pocetna kordinata projektila*/
-				bullets->x_pos = plane->x_pos;
-				bullets->y_pos = plane->y_pos;
-				bullets->z_pos = plane->z_pos;
-				/*postavljamo da je pucnjava aktivna kako ne bi mogli opet da pucamo i pomeramo metak*/
-				fire_active = 1 ;
-				glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);
+		if(plane->in_live == 1){
+			for(n=0;n<5;n++){
+				if(bullets[n]->in_live == 0){	
+					bullets[n]->in_live = 1;
+					
+					/*pocetna kordinata projektila*/
+					bullets[n]->x_pos = plane->x_pos;
+					bullets[n]->y_pos = plane->y_pos;
+					bullets[n]->z_pos = plane->z_pos;
+					
+					if(!timer_active){
+						timer_active = 1;
+						glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);
+					}
+					break;
+				}
 			}
-	}
+		}	
+		else{
+			 
+		}
+	}	
 }
 
-void onMouseMove(int x,int y){
 
-	
+void onMouseMove(int x,int y){
+	/*!fire_active
+	*/
 }
 

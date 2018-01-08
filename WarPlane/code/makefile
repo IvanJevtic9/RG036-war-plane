@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -Wno-unused-variable
 LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM) : main.o callback.o init.o objects.o draw.o timer.o allocation.o
+$(PROGRAM) : main.o callback.o init.o objects.o draw.o timer.o allocation.o image.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
 
 allocation.o : allocation.c allocation.h
@@ -24,8 +24,14 @@ init.o : init.c init.h
 callback.o : callback.c callback.h	
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+image.o : image.c image.h 
+	$(CC) $(CFLAGS) -c -o $@ $<
+
 main.o : main.c
 	$(CC) $(CFLAGS) -c -o $@ $< 
+
+
+
 
 PHONY : clean
 
