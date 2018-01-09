@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "callback.h": "c",
-        "timer.h": "c"
-    }
+        "timer.h": "c",
+        "init.h": "c",
+        "stdlib.h": "c",
+        "allocation.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

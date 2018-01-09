@@ -34,12 +34,24 @@ struct _Impediment{
 	int in_live ;
 	float brzina;
 };
+struct _Impediment2{
+	double x_pos;
+	double y_pos;
+	double z_pos;
+	
+	double dim;
+	int in_live;
+	float speed;
+	int health;
+};
+
 
 /*Uvodim skracenice za poziv strukture*/
 
 typedef struct _Plane Plane;
 typedef struct _Bullet Bullet;
 typedef struct _Impediment Impediment;
+typedef struct _Impediment2 Impediment2;
 
 void rotatePlane();
 

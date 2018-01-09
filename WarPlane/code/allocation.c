@@ -62,4 +62,25 @@ Impediment* newImpediment(double x, double y, double z, double d, int live,float
 	return i;
 
 }
+Impediment2* newImpediment2(double x, double y, double z, double d, int live,float brz,int hp){
+
+	Impediment2* i = malloc(sizeof(Impediment2));
+
+	if(i == NULL){
+		printf("Greska pri alokaciji!");
+		exit(EXIT_FAILURE);
+		}
+
+	i->x_pos = x;
+	i->y_pos = y;
+	i->z_pos = z;
+	i->dim = d;
+	i->in_live = live;
+	
+	i->speed = brz;
+	i->health = hp;
+	
+	return i;
+
+}
 

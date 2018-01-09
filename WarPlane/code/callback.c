@@ -10,7 +10,7 @@
 int window_width = 0;
 int window_height = 0;
 
-GLuint tekstura[2];
+GLuint texture[2];
 
 /*funkcija gde atributi min i max oznacava interval, u kojem funkcija vraca jedan broj iz tog intervala 
 	po slucajnom izboru*/
@@ -44,7 +44,7 @@ void onDisplay(){
  	glDisable(GL_LIGHTING);
   
   	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
- 	glBindTexture(GL_TEXTURE_2D,tekstura[1]);
+ 	glBindTexture(GL_TEXTURE_2D,texture[1]);
   	glBegin(GL_QUADS);
     	glNormal3f(0,0,1);
     	glTexCoord2f(0,0);
@@ -75,20 +75,77 @@ void onKeyboard(unsigned char c , int x, int y){
 	
 	switch(c){
 		/*pomeranje aviona desno , levo*/
-		case 'd' : 
+		case 'd' :{ 
 				if(plane->x_pos < 0.8)
-					plane->x_pos += 0.02;break;
-		case 'a' : 
+					plane->x_pos += 0.02;
+				
+				if(plane->z_rotate>6.2832)
+					plane->z_rotate = 0;
+				if(plane->z_rotate<0)
+					plane->z_rotate = 6.2832;
+
+				if((plane->z_rotate >= 0 && plane->z_rotate <= 1.5708) ||( plane->z_rotate >= 4.8 && plane->z_rotate <=6.2832))	
+					plane->z_rotate -= 0.1;
+				else if((plane->z_rotate > 1.5708 && plane->z_rotate <= 4.6))
+					plane->z_rotate +=0.1;
+				else
+					plane->z_rotate = 4.7124;
+
+		}break;
+		case 'a' :{ 
 				if(plane->x_pos > -0.8 )
-					plane->x_pos -= 0.02;break;
-					
-		case 'D' : 
+					plane->x_pos -= 0.02;
+
+				if(plane->z_rotate>6.2832)
+					plane->z_rotate = 0;
+				if(plane->z_rotate<0)
+					plane->z_rotate = 6.2832;	
+
+				if((plane->z_rotate >= 0 && plane->z_rotate <= 1.4) ||( plane->z_rotate >= 4.7124 && plane->z_rotate <=6.2832))	
+				plane->z_rotate += 0.1;
+
+				else if((plane->z_rotate >= 1.6 && plane->z_rotate < 4.7124))
+					plane->z_rotate -=0.1;
+				else
+					plane->z_rotate = 1.5708;		
+
+		}break;		
+		case 'D' :{ 
 				if(plane->x_pos < 0.8)
-					plane->x_pos += 0.02;break;
-		case 'A' : 
+					plane->x_pos += 0.02;
+				
+				if(plane->z_rotate>6.2832)
+					plane->z_rotate = 0;
+				if(plane->z_rotate<0)
+					plane->z_rotate = 6.2832;
+
+				if((plane->z_rotate >= 0 && plane->z_rotate <= 1.5708) ||( plane->z_rotate >= 4.8 && plane->z_rotate <=6.2832))	
+					plane->z_rotate -= 0.1;
+				else if((plane->z_rotate > 1.5708 && plane->z_rotate <= 4.6))
+					plane->z_rotate +=0.1;
+				else
+					plane->z_rotate = 4.7124;
+
+		}break;
+		case 'A' :{ 
 				if(plane->x_pos > -0.8 )
-					plane->x_pos -= 0.02;break;
-		
+					plane->x_pos -= 0.02;
+
+				if(plane->z_rotate>6.2832)
+					plane->z_rotate = 0;
+				if(plane->z_rotate<0)
+					plane->z_rotate = 6.2832;	
+
+				if((plane->z_rotate >= 0 && plane->z_rotate <= 1.4) ||( plane->z_rotate >= 4.7124 && plane->z_rotate <=6.2832))	
+				plane->z_rotate += 0.1;
+
+				else if((plane->z_rotate >= 1.6 && plane->z_rotate < 4.7124))
+					plane->z_rotate -=0.1;
+				else
+					plane->z_rotate = 1.5708;		
+
+		}break;	
+
 
 		/*izlaz iz programa*/
 		case 27 : exit(0);break;
@@ -97,31 +154,68 @@ void onKeyboard(unsigned char c , int x, int y){
 		  kasnije cu uvesti da ih bude vise */
 		case 'p' : {	
 			   if(!imp_active){	
-
-					impediments->in_live = 1;		
-					imp_active = 1;			
+				   int l;
+				   for(l=0;l<2;l++){
+						impediments[l]->in_live = 1;		
+				   	}
+					imp_active = 1;   			
 					glutTimerFunc(TIMER_INTERVAL2,moveImpediments,TIMER_ID);
 			 	}
 			 };break;
 
 		case 'P' : {	
 			   if(!imp_active){	
-
-					impediments->in_live = 1;		
-					imp_active = 1;			
+				   int l;
+				   for(l=0;l<2;l++){
+						impediments[l]->in_live = 1;		
+				   	}
+					imp_active = 1;   			
 					glutTimerFunc(TIMER_INTERVAL2,moveImpediments,TIMER_ID);
 			 	}
 			 };break;
 
 		/*vracanje aviona u zivot , nece biti ovako an kraju , cisto sam uveo to radi provere, da ne izlazim non stop iz programa*/
-		case 'r':
-			plane->in_live=1;	 
-				break;
+		case 'r':{
+			if(life == 0){
+				score = 0;
+				number = 0;
+				life = 3;
+				level = 0;
+				
+				plane->in_live=1;
+				
+				int i;
+				for(i=0;i<2;i++){
+					impediments[i]->z_pos = -5;
+					impediments[i]->x_pos = random_float(-0.9,0.9);
+					impediments[i]->dim = random_float(0.04,0.27);
+					impediments[i]->brzina = random_float(0.05,0.15);
+				for(i=0;i<5;i++){
+					bullets[i]->in_live = 0;	
+				}
+				
+				}	 
+			}
+		};	
+		break;
 
-		case 'R':
-			plane->in_live=1;	 
-				break;
-
+		case 'R':{
+			if(life == 0){
+				score = 0;
+				number = 0;
+				life = 3;
+				plane->in_live=1;
+				int i;
+				for(i=0;i<2;i++){
+					impediments[i]->z_pos = -5;
+					impediments[i]->x_pos = random_float(-0.9,0.9);
+					impediments[i]->dim = random_float(0.04,0.27);
+					impediments[i]->brzina = random_float(0.05,0.15);
+				}	 
+			}
+		};	
+		break;
+		
 		default : {}
 	}
 }
@@ -169,7 +263,6 @@ void onMouseClick(int button, int state, int x, int y){
 
 
 void onMouseMove(int x,int y){
-	/*!fire_active
-	*/
+	
 }
 

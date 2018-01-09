@@ -6,8 +6,7 @@
 Plane* newPlane(double x, double y, double z , double rotate , int live );
 Bullet* newBullet(double x, double y, double z, int live);
 Impediment* newImpediment(double x, double y, double z, double d, int live,float brz);
-
-
+Impediment2* newImpediment2(double x, double y, double z, double d, int live,float brz,int hp);
 
 
 #endif

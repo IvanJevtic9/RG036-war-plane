@@ -7,17 +7,17 @@ void ucitaj_teksture()
 {
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   
-  char *fajlovi;
+  char *file;
   
-  fajlovi = "pozadina.bmp";
+  file = "pozadina.bmp";
 
   Image *image = image_init(0, 0);
 
-	glGenTextures(2, tekstura);
+	glGenTextures(2, texture);
 
-    image_read(image, fajlovi);
+    image_read(image, file);
 
-    glBindTexture(GL_TEXTURE_2D, tekstura[1]);
+    glBindTexture(GL_TEXTURE_2D, texture[1]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

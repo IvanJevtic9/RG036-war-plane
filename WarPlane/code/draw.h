@@ -5,8 +5,10 @@ void drawAll();
 void basicDraw();
 void fire();
 void draw_imp();
-int coalision_plane_imp();
-int coalsion_bullet_imp();
-
+void draw_imp2();
+int coalision_plane_imp(int index);
+int coalsion_bullet_imp(int index);
+int coalision_plane_imp2();
+int coalsion_bullet_imp2();
 
 #endif

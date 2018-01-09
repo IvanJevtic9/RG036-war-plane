@@ -5,6 +5,7 @@ void startTimers();
 void rotatePlane(int timer_id);
 void moveBullets(int timer_id);
 void moveImpediments(int timer_id);
-void reload(int timer_id);
+void moveImpediments2(int timer_id);
+void Revive(int timer_id);
 
 #endif
