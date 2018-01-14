@@ -55,6 +55,10 @@ void moveImpediments(int timer_id){
 		impediments[i]->z_pos += impediments[i]->brzina;
 		glutPostRedisplay();	
 	}
+	if(life==0){
+		imp_active=0;
+		return;
+	}
 	
 	glutTimerFunc(TIMER_INTERVAL2-level_pom,moveImpediments,TIMER_ID);
 	
@@ -99,8 +103,10 @@ void moveImpediments2(int timer_id){
 			impediments2->speed = random_float(0.05,0.15);
 			impediments2->health = 2;
 		}
-	
-	
+		if(score<1000){
+			imp2_active = 0;
+			return;
+		}
 		impediments2->z_pos += impediments2->speed;
 		glutPostRedisplay();	
 	
@@ -117,4 +123,19 @@ void Revive(int timer_id){
 	revive_active = 0;
 
 	return;
+}
+void end_timer(int timer_id){
+	if(timer_id != 1)
+		return;
+
+	if(z_c >= 0){
+		end_animation=0;
+		return;
+	}
+
+	z_c += 0.01;
+
+	glutPostRedisplay();
+
+	glutTimerFunc(TIMER_END,end_timer,TIMER_ID);
 }

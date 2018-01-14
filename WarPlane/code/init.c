@@ -12,6 +12,11 @@ int imp2_active = 0;
 /*identifikatori broja metkova i tajmera koji ih pokrece*/
 int timer_active = 0;
 int revive_active = 0;
+int end_animation =0;
+
+float z_c = -0.8;
+int start_active = 0;
+
 int level = 0;
 int level_pom;
 

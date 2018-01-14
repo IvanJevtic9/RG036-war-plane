@@ -3,31 +3,34 @@
 #include "init.h"
 #include "image.h"
 
-void ucitaj_teksture()
+void load_texture()
 {
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   
-  char *file;
+  	char *file[2];
   
-  file = "pozadina.bmp";
+  	file[0] = "pozadina.bmp";
+	file[1] = "rock.bmp";
 
-  Image *image = image_init(0, 0);
+ 	Image *image = image_init(0, 0);
 
 	glGenTextures(2, texture);
+	int i;
 
-    image_read(image, file);
+	for(i = 0;i<2;i++){
+		image_read(image, file[i]);
 
-    glBindTexture(GL_TEXTURE_2D, texture[1]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                 image->width, image->height, 0,
-                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-  
+		glBindTexture(GL_TEXTURE_2D, texture[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+					image->width, image->height, 0,
+					GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+	}
 
-  image_done(image);
+	image_done(image);
 }
 
 
@@ -50,7 +53,7 @@ int main(int argc,char** argv){
 	glutSetCursor(GLUT_CURSOR_NONE);
 
 	glEnable(GL_TEXTURE_2D);
-	ucitaj_teksture();
+	load_texture();
 
 	glClearColor(0.5,0.5,0.5,0);
 	glEnable(GL_DEPTH_TEST);

@@ -5,6 +5,9 @@
 #define TIMER_INTERVAL 50
 #define TIMER_INTERVAL2 50
 #define TIMER_INTERVAL3 40
+#define TIMER_END 5
+
+#define PI 3.1415926535
 
 extern int window_width;
 extern int window_height;

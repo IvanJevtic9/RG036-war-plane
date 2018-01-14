@@ -6,6 +6,12 @@ void basicDraw();
 void fire();
 void draw_imp();
 void draw_imp2();
+void draw_bullets_bar();
+void draw_score_bar();
+void draw_life_bar();
+void draw_end();
+void draw_start();
+
 int coalision_plane_imp(int index);
 int coalsion_bullet_imp(int index);
 int coalision_plane_imp2();
