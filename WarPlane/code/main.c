@@ -10,7 +10,7 @@ void load_texture()
   	char *file[2];
   
   	file[0] = "pozadina.bmp";
-	file[1] = "rock.bmp";
+	file[1] = "rock.bmp";//tekstura za prepreke za koju sam odustao
 
  	Image *image = image_init(0, 0);
 
@@ -35,6 +35,19 @@ void load_texture()
 
 
 int main(int argc,char** argv){
+	
+	/*Pozicija svetla*/
+	GLfloat light_position[] = { 2, 2, 2, 1 };
+
+	 /* Ambijentalna boja svetla. */
+    GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1 };
+
+    /* Difuzna boja svetla. */
+    GLfloat light_diffuse[] = { 0.6, 0.6, 0.6, 1 };
+
+    /* Spekularna boja svetla. */
+    GLfloat light_specular[] = { 0.8, 0.8, 0.8, 1 };
+		
 	/*inicijalizujemo sve na pocetku , sandardno sve */
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
@@ -58,6 +71,18 @@ int main(int argc,char** argv){
 	glClearColor(0.5,0.5,0.5,0);
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_LIGHTING);
+
+    /* Postavljaju se svojstva prvog svetla */
+    glEnable(GL_LIGHT0);
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+	glDisable(GL_LIGHTING);
+	/*pokrecemo igru*/
 	startGame();  
 
 	glutMainLoop();

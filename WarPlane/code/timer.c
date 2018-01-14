@@ -7,11 +7,11 @@
 
 /*Pozivamo tajmere koji se uvek izvrsavaju za svo vreme trajanja igre*/
 void startTimers(){
-	
-		glutTimerFunc(TIMER_INTERVAL,rotatePlane,TIMER_ID);
+	/*rotacija aviona */
+	glutTimerFunc(TIMER_INTERVAL,rotatePlane,TIMER_ID);
 	
 }
-/*rotacija aviona  , ogranicavamo max ugao */
+/*rotacija aviona  , ogranicavamo max ugao ,sinusna funkcija ogranicena na jedan interval*/
 void rotatePlane(int timer_id){
 
 	if(timer_id != 1)
@@ -34,7 +34,7 @@ void rotatePlane(int timer_id){
 
 
 /*Tajmer za pokretanje prepreke , inicijalizujemo poziciju do koje moze da ide po z osi , cim stigne dotle 
-ponovo ga vracamo na pocetak , za sad su ove prepreke ovake , kasnije cu doraditi da ih ima vise na sceni*/
+ponovo ga vracamo na pocetak */
 void moveImpediments(int timer_id){
 
 	if(timer_id != 1){
@@ -55,6 +55,7 @@ void moveImpediments(int timer_id){
 		impediments[i]->z_pos += impediments[i]->brzina;
 		glutPostRedisplay();	
 	}
+	/*deo kada izgubimo sve zivote da gasimo tajmer*/
 	if(life==0){
 		imp_active=0;
 		return;
@@ -71,7 +72,7 @@ void moveBullets(int timer_id){
 	if(timer_id != 1 ){
 		return;
 	}
-
+	/*prolazimo kroz petlju , svi metkovi koji su zivi pomeramo*/
 	int i;	
 	for(i=0;i<=4;i++){
 		if(bullets[i]->in_live){
@@ -84,6 +85,7 @@ void moveBullets(int timer_id){
 			glutPostRedisplay();
 		}
 	}
+	/*ako su svi metkovi ugaseni , izlazimo iz tajmera i oznacamo promenljivu na nula da mozemo opet da upalimo tajmer*/
 	if(bullets[0]->in_live == 0 && bullets[1]->in_live == 0 && bullets[2]->in_live == 0 &&
 		bullets[3]->in_live == 0 && bullets[4]->in_live == 0){
 			timer_active = 0;
@@ -92,6 +94,8 @@ void moveBullets(int timer_id){
 
 	glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);	
 }
+
+/*pokretanje druge prepreke ako je skor manji od 1000 gasimo tajmer , potrebno kada restartujemo igricu*/
 void moveImpediments2(int timer_id){
 	if(timer_id != 1)
 		return;
@@ -113,6 +117,7 @@ void moveImpediments2(int timer_id){
 	
 	glutTimerFunc(TIMER_INTERVAL3-level_pom,moveImpediments2,TIMER_ID);
 }
+/*ozivljavljanje aviona , smanjujemo zivote*/
 void Revive(int timer_id){
 
 	if(timer_id != 1)
@@ -124,6 +129,7 @@ void Revive(int timer_id){
 
 	return;
 }
+/*tajmer koji nam priblizzava ekran za kraj*/
 void end_timer(int timer_id){
 	if(timer_id != 1)
 		return;
@@ -138,4 +144,13 @@ void end_timer(int timer_id){
 	glutPostRedisplay();
 
 	glutTimerFunc(TIMER_END,end_timer,TIMER_ID);
+}
+void timer_up(int timer_id){
+
+	if(timer_id != 1)
+		return;
+
+	level_up = 0;
+	
+	return;
 }

@@ -14,28 +14,37 @@
 /*funkcija koja iscrtava sve objekte , sva iscrtavanja u programu se nalaze ovde*/
 void drawAll(){
 
-
+	/*ako je inicijalizacija zavrsena i ako imamo bar 1 zivot crtamo scene*/
 	if(init_done && life>0 ){
-		
+		/*deo za iscrtavanja pocetnog stringa*/
 		if(!start_active)	
 			draw_start();
-
-		z_c = -0.8;
 		
-		if(number == 25 )
+		z_c = -0.8;
+		/*Nakon unistavanja odredjenih prepreka dodajemo level(ubrzavamo igru)*/
+		if(number == 25 ){
 			level = 1;	
-		if(number==50)
+			level_up=1;
+		}
+		if(number==50){
 			level = 2;
-		if(number == 75)
+			level_up=1;
+		}
+		if(number == 75){
 			level = 3;
+			level_up=1;
+		}
+
+		if(level_up)
+			draw_level_up();
 
 		level_pom = 10*level;
-
+		/*crtanje aviona*/
 		basicDraw();	
-
+		/*crtanje prepreka*/
 		if(imp_active)
 			draw_imp();	
-
+		/*nakon ovog skora dodajemo tezu prepreku */
 		if(score>1000){	
 			impediments2->in_live = 1;
 			draw_imp2();
@@ -44,6 +53,7 @@ void drawAll(){
 				glutTimerFunc(TIMER_INTERVAL3-level_pom,moveImpediments2,TIMER_ID);	
 			}
 		}
+		/*iscrtavamo metkove i indikacuju u igri*/
 		fire();	
 		draw_bullets_bar();
 		draw_score_bar();
@@ -52,7 +62,7 @@ void drawAll(){
 		//printf("%d,%d,%d,level %d,number %d\n",score,number,life,level,number);
 	}
 	else{
-		
+		/*ako imamo 0 zivota ulazimo u zavrsni deo za kraj igre*/
 		draw_end();
 
 	}
@@ -81,8 +91,7 @@ int  coalision_plane_imp(int index){
 	else 
 		return 0;
 }
-/*kolizija izmedju metka i prepreke , moraja da im se opseg sirine(kad posmatramo u odnosu na prozor) poklopi negde na x osi da bi doslo do kolizije 
-, i da im se opseg dubine poklopi */
+/*kolizija metka i prepreke, vraca indeks metka koji se sudario sa preprekom*/
 int coalsion_bullet_imp(int index){
 
 	int i;
@@ -106,6 +115,7 @@ int coalsion_bullet_imp(int index){
 
 	return 0;
 }	
+/*kolizija aviona i druge prepreke*/
 int  coalision_plane_imp2(){
 	
 	if( ((((impediments2->x_pos + impediments2->dim/2) - (plane->x_pos-0.125)) > 0 &&
@@ -126,7 +136,7 @@ int  coalision_plane_imp2(){
 		return 0;
 }
 
-
+/*kolizija metka i druge prepreke*/
 int coalsion_bullet_imp2(){
 	int i;
 
@@ -150,81 +160,159 @@ int coalsion_bullet_imp2(){
 	return 0;
 }	
 
-/* crtanje aviona , krajnji izgled aviona cu izmeniti do zavrsetka projekta */
+/* crtanje aviona  */
 void basicDraw(){
 	
+	/*boja trupa*/
+    GLfloat ambient_coeffs[] = { 0,0.4,0, 1 };
+
+    GLfloat diffuse_coeffs[] = { 0.1,0.5,0.1, 1 };
+
+    GLfloat specular_coeffs[] = { 0.1,1,0.1,1};
+
+    GLfloat shininess = 0;
+
+	/*boja krila*/
+	GLfloat ambient_coeffs1[] = { 0.01,0.06,0.01, 1 };
+
+    GLfloat diffuse_coeffs1[] = { 0.01,0.08,0.01, 1 };
+
+    GLfloat specular_coeffs1[] = { 0.03,0.03,0.03,1};
+
+    GLfloat shininess1 = 0;
+	
+	/*ostalo boja*/
+    GLfloat ambient_coeffs2[] = { 0, 0, 0, 1 };
+
+    GLfloat diffuse_coeffs2[] = { 0.01, 0.01, 0.01, 1 };
+
+    GLfloat specular_coeffs2[] = {0.03 , 0.03 ,0.03 , 1 };
+
+    GLfloat shininess2 = 2;
+
+	/*otsecanje za staklo*/
+	double clip_plane[] = {0,0,1,0.125};
+	/*otsecanje za krila*/
+	double clip_plane1[] = {-1,-1,0,0.11};
+	double clip_plane2[] = {1,-1,0,0.11};
+
+	/*ako nije doslo do kolizije aviona sa nekom od prepreka iscrtavamo ga*/
 	if(!coalision_plane_imp(1) && !coalision_plane_imp(0) && !coalision_plane_imp2() && plane->in_live){
 	
 		glPushMatrix();
 			/*pozicioniramo se u kordinate sredista aviona i rotiramo avion*/
+			
+			glEnable(GL_LIGHTING);
 			glTranslatef(plane->x_pos,plane->y_pos,plane->z_pos);
 
 			glRotatef(sin(plane->z_rotate)*15,0,0,1);
-			
 
-
-			/*telo aviona*/
+			/*Trup aviona*/
 			glPushMatrix();
-				glColor3f(0.7,0.7,0.7);
+				glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
 				glScalef(0.3, 0.2, 1);
 				glutSolidCube(0.25);
 			glPopMatrix();
 
+			/*Staklo aviona*/
+			glEnable(GL_CLIP_PLANE0);
+			glEnable(GL_CLIP_PLANE1);
+			glEnable(GL_CLIP_PLANE2);
+			
 			glPushMatrix();
-				glColor3f(0,0,0);
-				glTranslatef(0,0.008,-0.0624);
-				glRotatef(-5,1,0,0);
-				glScalef(0.24, 0.2, 0.5);
-				glutSolidCube(0.25);
-			glPopMatrix();
 
+				glClipPlane(GL_CLIP_PLANE0,clip_plane);
+				glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs2);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs2);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs2);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess2);
+
+				glTranslatef(0,0.022,-0.02);
+				glRotatef(-190,1,0,0);		
+				glScalef(0.2,0.2,1.1);
+				glutSolidCone(0.15,0.8,40,40);
+
+			glPopMatrix();
+			glDisable(GL_CLIP_PLANE0);
 
 			/*krila aviona*/
-
-			
-			glColor3f(0.1,0.1,0.1);
-			
+			glClipPlane(GL_CLIP_PLANE1,clip_plane1);
+			glClipPlane(GL_CLIP_PLANE2,clip_plane2);			
 			glPushMatrix();
-				glTranslatef(0, 0, -0.1);			
+				glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs1);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs1);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs1);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess1);
+
+				glTranslatef(0, -0.01, -0.1);			
 				glScalef(1, 0.2, 0.1);
 				glutSolidCube(0.25); 
 			glPopMatrix();
 				
 			glPushMatrix();
-				glTranslatef(0, 0, 0);			
+				glTranslatef(0, -0.01, 0);			
 				glScalef(1, 0.2, 0.1);
 				glutSolidCube(0.25);
 			glPopMatrix();
+			glDisable(GL_CLIP_PLANE1);
+			glDisable(GL_CLIP_PLANE2);
 
+			/*zadnji deo tela*/
 			glPushMatrix();
-				glColor3f(0.7,0.7,0.7);
-				glTranslatef(0,0,0.12);
+				glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
+				glTranslatef(0,0,0.13);
 				glRotatef(-180,1,0,0);		
 				glScalef(0.2,0.2,1.1);
 				glutSolidCone(0.28,0.2,40,40);
 			glPopMatrix();
 
+			/*zadnji deo okvir*/
+			glDisable(GL_LIGHTING);
 			glPushMatrix();
 				glColor3f(0,0,0);
-				glTranslatef(0,0,0.121);
+				glTranslatef(0,0,0.131);
 				glRotatef(-180,1,0,0);		
 				glScalef(0.2,0.2,1.1);
-				glutWireCone(0.28,0.01,40,40);
+				glutWireCone(0.28,0.01,25,25);
 			glPopMatrix();
+			glEnable(GL_LIGHTING);
 			
+			/*izlaz */
 			glPushMatrix();
-				glColor3f(0,0,0);
-				glTranslatef(0,0,0.13);
+			glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs2);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs2);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs2);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess2);
+
+				glTranslatef(0,0,0.139);
 				glRotatef(-180,1,0,0);		
 				glScalef(0.2,0.2,1.1);
-				glutSolidCone(0.15,0.1,40,40);
+				glutSolidCone(0.15,0.1,100,100);
 			glPopMatrix();
 
-		glPopMatrix();
-
+			glDisable(GL_LIGHTING);
+		glPopMatrix();	
 	}
 	else{
-		/*ako dodje do kolizije avion nije u zivotu vise*/
+		/*ako dodje do kolizije avion nije u zivotu vise,pokrecemo tajmer za ozivljavanje*/
 		plane->in_live =0;
 		if(!revive_active){
 			revive_active=1;
@@ -238,14 +326,34 @@ void basicDraw(){
 /* crtanje metkova , na osnovu kordinata koje joj prosledjujemo*/
 void fire(){
 	int i;
+	/* Koeficijenti ambijentalne refleksije materijala. */
+    GLfloat ambient_coeffs[] = { 0.6, 0.1, 0.1, 1 };
+
+    /* Koeficijenti difuzne refleksije materijala. */
+    GLfloat diffuse_coeffs[] = { 1, 0, 0, 1 };
+
+    /* Koeficijenti spekularne refleksije materijala. */
+    GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
+
+    /* Koeficijent glatkosti materijala. */
+    GLfloat shininess = 60;
+
+	/*prolazimo kroz sve metkove ako su zivi iscrtavamo ih*/
 	for(i=0;i<5;i++){
 		if(bullets[i]->in_live){
-
+			glEnable(GL_LIGHTING);
 			glPushMatrix();
-						glColor3f(1,0,0);
-						glTranslatef(bullets[i]->x_pos, bullets[i]->y_pos, bullets[i]->z_pos);
-						glutSolidSphere(0.02,50,20);
+				glEnable(GL_SMOOTH);
+				/* Postavljaju se svojstva materijala */
+				glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+				glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+								
+				glTranslatef(bullets[i]->x_pos, bullets[i]->y_pos, bullets[i]->z_pos);
+				glutSolidSphere(0.02,50,20);
 			glPopMatrix();
+			glDisable(GL_LIGHTING);
 
 			glutPostRedisplay();
 		}
@@ -254,23 +362,42 @@ void fire(){
 /*crtanje prepreka u kordinatama koje joj prosledimo*/
 void draw_imp(){
 	int i;
+	/* Koeficijenti ambijentalne refleksije materijala. */
+    GLfloat ambient_coeffs[] = { 0.1, 0.1, 0.7, 1 };
+
+    /* Koeficijenti difuzne refleksije materijala. */
+    GLfloat diffuse_coeffs[] = { 0,0,1,1 };
+
+    /* Koeficijenti spekularne refleksije materijala. */
+    GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
+
+    /* Koeficijent glatkosti materijala. */
+    GLfloat shininess = 30;
+
+
 	for(i=0;i<2;i++){
 		/*ako je prepreka u zivotu i ako nije doslo do kolizije izmedju nje i metka , crtaj prepreku*/
 		if(impediments[i]->in_live && !coalsion_bullet_imp(i) && !coalision_plane_imp(i)){		
-			
+				glEnable(GL_LIGHTING);
 				glPushMatrix();
-					glColor3f(0,0,1);
+			
+					glEnable(GL_SMOOTH);
+					/* Postavljaju se svojstva materijala */
+					glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+					glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+			
 					glTranslatef(impediments[i]->x_pos,impediments[i]->y_pos,impediments[i]->z_pos);
 					glutSolidCube(impediments[i]->dim);
 				glPopMatrix();
-
+				glDisable(GL_LIGHTING);
 				glutPostRedisplay();
 
 			}
 		else{
-			/* u suprotnom doslo je do kolizije flag=1 oznaacavamo da je doslo do sudara izmedju metka i prepreke
-			, kako bi znali da unistimo i metak jer funkcija coalision nece raditi jer je prepreka unistena */
-
+			/*u suprotnom doslo je do kolizije , vidimo koji indeks nam vraca funkcija i gasimo taj metak 
+			dok prepreku postavljamo na pocetnu poziciju , po random vrednostima,uvecavamo number broj unistenih prepreka*/
 			int flag = coalsion_bullet_imp(i);
 			if(flag > 0)
 				bullets[flag-1]->in_live = 0;
@@ -287,22 +414,43 @@ void draw_imp(){
 	}
 }
 void draw_imp2(){
-	
+
+		/* Koeficijenti ambijentalne refleksije materijala. */
+		GLfloat ambient_coeffs[] = { 0.7, 0.7, 0.1, 1 };
+
+		/* Koeficijenti difuzne refleksije materijala. */
+		GLfloat diffuse_coeffs[] = { 1, 1, 0, 1 };
+
+		/* Koeficijenti spekularne refleksije materijala. */
+		GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
+
+		/* Koeficijent glatkosti materijala. */
+		GLfloat shininess = 30;
+
+
+		/*provera za snazniju prepreku ,slicno ko prethodne prepreke*/
 		if(impediments2->in_live && !coalsion_bullet_imp2() && !coalision_plane_imp2()){		
 			
+				glEnable(GL_LIGHTING);
 				glPushMatrix();
-					glColor3f(1,1,0.3);
+			
+					glEnable(GL_SMOOTH);
+					/* Postavljaju se svojstva materijala */
+					glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+					glMaterialf(GL_FRONT, GL_SHININESS, shininess);
+
 					glTranslatef(impediments2->x_pos,impediments2->y_pos,impediments2->z_pos);
 					glutSolidCube(impediments2->dim);
 				glPopMatrix();
+				glDisable(GL_LIGHTING);
 
 				glutPostRedisplay();
 
 			}
 		else{
-			/* u suprotnom doslo je do kolizije flag=1 oznaacavamo da je doslo do sudara izmedju metka i prepreke
-			, kako bi znali da unistimo i metak jer funkcija coalision nece raditi jer je prepreka unistena */
-
+			
 			int flag = coalsion_bullet_imp2();
 			if(flag > 0)
 				bullets[flag-1]->in_live = 0;
@@ -321,7 +469,8 @@ void draw_imp2(){
 			glutPostRedisplay(); 
 		}
 }
-/*Greska*/
+/*Crtanje koliko metkova nam je ostalo , imamo otsecanje u jednom pravcu.POmeramo otsecanje u zavisnosi koliko metkova imamo
+na raspolaganju*/
 void draw_bullets_bar(){
 	double clip_plane[] = {-1,0,0,0.125};
 
@@ -332,10 +481,11 @@ void draw_bullets_bar(){
 		if(bullets[i]->in_live==1)
 			b++;
 	}
-	
+	/*menjamo boju kako imamo sto manje metkova*/
 	boja = (5-b)*0.2;
 	clip_plane[3] = (0.125 - b*0.05); 
 	
+	/*iscrtavanje*/
 	glPushMatrix();
 	    glEnable(GL_LINE_SMOOTH);
 
@@ -378,7 +528,7 @@ void draw_bullets_bar(){
 	glPopMatrix();
 	glDisable(GL_LINE_SMOOTH);
 }
-
+/*iscrtavanje dela za skor*/
 void draw_score_bar(){
     char text1[6] = "SCORE";
 	text1[5]='\0';
@@ -395,21 +545,10 @@ void draw_score_bar(){
 		glRotatef(-20,1,0,0);
       	glScalef(0.0005,0.0005,0.001);
       	glColor3f(1,0,0);
-      	for(char *c=text1;*c;c++)
+      	/*prolazimo kroz ceo tekst , kad dodje do terminalne nule izlazi iz petlje*/
+		for(char *c=text1;*c;c++)
     	glutStrokeCharacter(GLUT_STROKE_ROMAN,*c);
     glPopMatrix();
-	
-	/*glPushMatrix();
-		glTranslatef(0.97,0.775,0.5);
-		glRotatef(-20,1,0,0);
-		glColor3f(0.3,0.3,0.3);
-		glBegin(GL_QUADS);
-			glVertex3f(-0.125,0.04,0);
-			glVertex3f(0.125,0.04,0);
-			glVertex3f(0.125,-0.04,0);
-			glVertex3f(-0.125,-0.04,0);
-		glEnd();
-	glPopMatrix();*/
 	
 	glPushMatrix();
 		glTranslatef(0.87,0.76,0.51);
@@ -423,7 +562,7 @@ void draw_score_bar(){
     glDisable(GL_LINE_SMOOTH);
 
 }
-
+/*graficki iscrtavanje zivota */
 void draw_life_bar(){
 
 	int i;
@@ -594,7 +733,7 @@ void draw_life_bar(){
 		glPopMatrix();
 	glPopMatrix();
 }
-
+/*iscrtavanje dela (poligona,prozora kako god) u kome ispisujemo skor i ostale stvari*/
 void draw_end(){
 
 	char text1[] = "GAME";
@@ -696,6 +835,7 @@ void draw_end(){
 
 	glPopMatrix();
 }
+/*tekst za ispis na sstartu za pokretanje igre*/
 void draw_start(){
 
 	char text[] = "Press left click to start";
@@ -715,4 +855,26 @@ void draw_start(){
 
 	glPopMatrix();
 
+}
+/*Deo za iscrtavanja teksta level up*/
+void draw_level_up(){
+
+	char text[] = {"LEVEL UP!"};
+
+	text[9]='\0';
+
+
+	glPushMatrix();
+		glLineWidth(3);
+		glColor3f(0,1,0);
+		glRotatef(-20,1,0,0);
+
+		glTranslatef(1.05,0.68,0.2);
+		glScalef(0.0005,0.0005,0.001);
+		for(char *c=text;*c;c++)
+		glutStrokeCharacter(GLUT_STROKE_ROMAN,*c);
+		
+	glPopMatrix();
+
+	glutTimerFunc(2000,timer_up,TIMER_ID);
 }

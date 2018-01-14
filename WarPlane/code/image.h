@@ -4,6 +4,9 @@
  * Dve strukture koje opisuju strukturu dva zaglavlja
  * kojima pocinje svaka slika u bmp formatu.
  */
+
+/*PREUZETO*/
+
 typedef struct {
   unsigned short type;
   unsigned int size;

@@ -7,9 +7,12 @@
 #include "draw.h"		
 #include "timer.h"
 
+/*Promenljive za cuvanje velicine prozora*/
+
 int window_width = 0;
 int window_height = 0;
 
+/*Promenljiva za teksture*/
 GLuint texture[2];
 
 /*funkcija gde atributi min i max oznacava interval, u kojem funkcija vraca jedan broj iz tog intervala 
@@ -43,6 +46,7 @@ void onDisplay(){
   	glDisable(GL_DEPTH_TEST);
  	glDisable(GL_LIGHTING);
   
+	/*Postavljanje teksture svemira*/
   	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
  	glBindTexture(GL_TEXTURE_2D,texture[0]);
   	glBegin(GL_QUADS);
@@ -74,7 +78,7 @@ void onDisplay(){
 void onKeyboard(unsigned char c , int x, int y){
 	
 	switch(c){
-		/*pomeranje aviona desno , levo*/
+		/*pomeranje aviona desno , levo , kao i rotiranje u stranu koja zavisi koje dugme je pritisnuto*/
 		case 'd' :{ 
 				if(plane->x_pos < 0.8)
 					plane->x_pos += 0.02;
@@ -150,7 +154,7 @@ void onKeyboard(unsigned char c , int x, int y){
 		/*izlaz iz programa*/
 		case 27 : exit(0);break;
 
-		/*vracanje aviona u zivot , nece biti ovako an kraju , cisto sam uveo to radi provere, da ne izlazim non stop iz programa*/
+		/*restart igrice , sve se postavlja na stanja za pocetak igrice */
 		case 'r':{
 			if(life == 0){
 				score = 0;
@@ -160,7 +164,8 @@ void onKeyboard(unsigned char c , int x, int y){
 				
 				plane->in_live=1;
 				start_active = 0;
-				
+
+				/*odredjivanje slucajne pozicije za prepreke */
 				int i;
 				for(i=0;i<2;i++){
 					impediments[i]->z_pos = -5;
@@ -168,6 +173,7 @@ void onKeyboard(unsigned char c , int x, int y){
 					impediments[i]->dim = random_float(0.04,0.27);
 					impediments[i]->brzina = random_float(0.05,0.15);
 				}
+				/*Sve metkove gasimo*/
 				for(i=0;i<5;i++){
 					bullets[i]->in_live = 0;	
 				}
@@ -216,16 +222,18 @@ void onReshape(int w_width, int w_height){
 
 
 void onMouseClick(int button, int state, int x, int y){
-	// levim klikom zapocinjemo pucanje , za sad je moguce samo jedan metak , dok se on ne zavrsi necemo moci da ispalimo drugi 
+	// levim klikom zapocinjemo pucanje  
 	
 	int n;
 
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-		/* ako je pucnjava ne aktivna i ako je avion u zivotu zapocinjemo pucnjavu  */
+		/* ako je avion u zivotu zapocinjemo pucnjavu  */
 		if(plane->in_live == 1){
-
+			/*promenjliva gde gasimo string na pocetku igre*/
 			start_active = 1;
-
+			
+			/*Imamo 5 metkova raspolozivih , prolazimo kroz petlju i gledamo koji nije aktivan
+			na prvi koji naletimo ozivljavamo ga i postavljamo ga na odgovarajucu poziciju*/
 			for(n=0;n<5;n++){
 				if(bullets[n]->in_live == 0){	
 					bullets[n]->in_live = 1;
@@ -234,16 +242,17 @@ void onMouseClick(int button, int state, int x, int y){
 					bullets[n]->x_pos = plane->x_pos;
 					bullets[n]->y_pos = plane->y_pos;
 					bullets[n]->z_pos = plane->z_pos-0.124;
-					
+					/*Pokrecemo tajmer za kretanje projektila*/
 					if(!timer_active){
 						timer_active = 1;
 						glutTimerFunc(TIMER_INTERVAL2,moveBullets,TIMER_ID);
 					}
 					break;
 				}
-			}
+			}/*na klik takodje pokrecemo prepreke*/
 			if(!imp_active){	
 				   int l1;
+				   /*imamo dve prepreke na pocetku , pokrecemo ih*/
 				   for(l1=0;l1<2;l1++){
 						impediments[l1]->in_live = 1;		
 				   	}

@@ -11,6 +11,7 @@ void draw_score_bar();
 void draw_life_bar();
 void draw_end();
 void draw_start();
+void draw_level_up();
 
 int coalision_plane_imp(int index);
 int coalsion_bullet_imp(int index);

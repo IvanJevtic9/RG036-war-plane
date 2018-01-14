@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-// alokacija objekata , avion ,metkovi , prepreke 
+// alokacija objekata : avion ,metkovi , prepreke .
 
 Plane* newPlane(double x, double y, double z , double rotate , int live ){
 	

@@ -34,6 +34,8 @@ struct _Impediment{
 	int in_live ;
 	float brzina;
 };
+
+/*struktura jace prepreke*/
 struct _Impediment2{
 	double x_pos;
 	double y_pos;
@@ -52,7 +54,7 @@ typedef struct _Plane Plane;
 typedef struct _Bullet Bullet;
 typedef struct _Impediment Impediment;
 typedef struct _Impediment2 Impediment2;
-
+/*funkcija za rotaciju aviona*/
 void rotatePlane();
 
 

@@ -23,6 +23,7 @@
 	extern int imp_active;
 	extern int imp2_active;
 	extern int level ;
+	extern int level_up;
 	extern int level_pom;
 
 #endif

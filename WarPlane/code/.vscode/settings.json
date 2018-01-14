@@ -4,7 +4,8 @@
         "timer.h": "c",
         "init.h": "c",
         "stdlib.h": "c",
-        "allocation.h": "c"
+        "allocation.h": "c",
+        "assert.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
